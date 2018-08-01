@@ -19,3 +19,6 @@ Steem Reblogger by Tags - @ilovecooding
 1. Automatic Upvote for these resteemed posts
 2. Avoid Resteemed Twice (currently, exception thrown)
 3. Resteem Queue - allow control of resteem/maximum intervals
+
+## SteemIt Post
+https://steemit.com/utopian-io/@justyy/i-love-coding-the-steemit-reblogger-service
