@@ -98,11 +98,11 @@ function failover() {
     var rpc_node = config.rpc_nodes[cur_node_index];
 
     steem.api.setOptions({ transport: 'http', uri: rpc_node, url: rpc_node });
-    utils.log('');
-    utils.log('***********************************************');
-    utils.log('Failing over to: ' + rpc_node);
-    utils.log('***********************************************');
-    utils.log('');
+    log('');
+    log('***********************************************');
+    log('Failing over to: ' + rpc_node);
+    log('***********************************************');
+    log('');
   }
 }
                 
