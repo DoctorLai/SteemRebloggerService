@@ -1,7 +1,14 @@
+/*
+Usage: pm2 start reblogger.js
+Alternatively: node reblogger.js &   
+and run disown to detach
+*/
+
 const fs = require("fs");
 const steem = require('steem');
 const utils = require('utils');
 
+// read configure file
 var config = JSON.parse(fs.readFileSync("config.json"));
 
 // Connect to the specified RPC node
@@ -11,6 +18,7 @@ steem.api.setOptions({ transport: 'http', uri: rpc_node, url: rpc_node });
 // every config.interval seconds 
 setInterval(startProcess, config.interval * 1000);
 
+// main entry point
 function startProcess() {
   startReblogging(config.tags, config.blacklist);
 }
@@ -42,6 +50,8 @@ const reblog = (author1, permlink1) => {
   });  
 }
 
+// parameter: tags0 - the tags we are interested
+// parameter: blacklist - author id array
 const startReblogging = async(tags0, blacklist) => {
   log("Listening to Steem Blockchain...")
   steem.api.streamOperations((err, result) => {
@@ -59,12 +69,13 @@ const startReblogging = async(tags0, blacklist) => {
             tags = tags.tags;
           }
         }
-        if (parent_author===''&& (!permlink1.startsWith("re-")))  {
-          if (arrayInArray(tags, tags0)) {
-            if (blacklist.includes(author1)) {
+        if (parent_author===''&& (!permlink1.startsWith("re-")))  { // not a comment
+          if (arrayInArray(tags, tags0)) { // filter by tags
+            if (blacklist.includes(author1)) { // black list filter
               log("blacklist author: " + author1);
             } else {
               log("resteem @" + author1 + "/" + permlink1);
+              // resteeem it
               reblog(author1, permlink1);   
             }       
           }
