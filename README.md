@@ -12,3 +12,8 @@ Steem Reblogger by Tags - @ilovecooding
 
 ## Monitor
 `pm2 monit`
+
+## Roadmap
+1. Automatic Upvote for these resteemed posts
+2. Avoid Resteemed Twice (currently, exception thrown)
+3. Resteem Queue - allow control of resteem/maximum intervals
