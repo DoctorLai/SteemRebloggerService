@@ -1,5 +1,5 @@
 # SteemRebloggerService
-Steem Reblogger by Tags - @ilovecooding
+Steem Reblogger by Tags - [@ilovecoding](https://steemit.com/@ilovecoding)
 
 ## Production Example
 - @ilovecoding - https://steemit.com/@ilovecoding
