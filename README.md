@@ -13,6 +13,8 @@ Steem Reblogger by Tags - @ilovecooding
 ## Monitor
 `pm2 monit`
 
+![](https://github.com/DoctorLai/SteemRebloggerService/blob/master/SteemRebloggerService.jpg?raw=true)
+
 ## Roadmap
 1. Automatic Upvote for these resteemed posts
 2. Avoid Resteemed Twice (currently, exception thrown)
