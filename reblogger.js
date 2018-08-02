@@ -6,14 +6,14 @@ and run disown to detach
 
 const fs = require("fs");
 const steem = require('steem');
-const utils = require('utils');
+// const utils = require('utils');
 
 // read configure file
 var config = JSON.parse(fs.readFileSync("config.json"));
 
 // Connect to the specified RPC node
 var rpc_node = config.rpc_nodes ? config.rpc_nodes[0] : (config.rpc_node ? config.rpc_node : 'https://api.steemit.com');
-steem.api.setOptions({ transport: 'http', uri: rpc_node, url: rpc_node });
+steem.api.setOptions({ transport: 'https', uri: rpc_node, url: rpc_node });
 
 // every config.interval seconds 
 setInterval(startProcess, config.interval * 1000);
@@ -97,7 +97,7 @@ function failover() {
 
     var rpc_node = config.rpc_nodes[cur_node_index];
 
-    steem.api.setOptions({ transport: 'http', uri: rpc_node, url: rpc_node });
+    steem.api.setOptions({ transport: 'https', uri: rpc_node, url: rpc_node });
     log('');
     log('***********************************************');
     log('Failing over to: ' + rpc_node);
