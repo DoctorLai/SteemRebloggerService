@@ -52,7 +52,7 @@ const reblog = (author1, permlink1) => {
 
 // parameter: tags0 - the tags we are interested
 // parameter: blacklist - author id array
-const startReblogging = async(tags0, blacklist) => {
+const startReblogging = (tags0, blacklist) => {
   log("Listening to Steem Blockchain...")
   steem.api.streamOperations((err, result) => {
     if (result && !err) {
