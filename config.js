@@ -20,6 +20,7 @@
   "posting_key": "POSTING KEY",
   "tags": ["ilovecoding", "programming", "coding"],
   "blacklist": [],    
+  "voting_percentage": 500,
   "blacklist_tags": ["test"],    
   "interval": 3
 }
