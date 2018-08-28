@@ -19,6 +19,7 @@
   "account": "ilovecoding",
   "posting_key": "POSTING KEY",
   "tags": ["ilovecoding", "programming", "coding"],
-  "blacklist": [],
+  "blacklist": [],    
+  "blacklist_tags": ["test"],    
   "interval": 3
 }
