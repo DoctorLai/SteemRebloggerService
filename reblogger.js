@@ -56,6 +56,115 @@ const reblog = (author1, permlink1) => {
   steem.broadcast.customJson(config.posting_key, [], [config.account], 'follow', json, (err, result) => {
       if (result && !err) {
         log("resteemed!");
+        voting_post(author1, permlink1, config.voting_percentage);
+      } else {
+        log(err);
+        log(result);
+      }
+  });  
+}
+
+// voting
+const voting_post = (account, permlink, weight) => {
+  /* @params username, password, author, permlink, weight */
+  if (weight <= 0) return;
+  steem.broadcast.vote(config.posting_key, config.account, account, permlink, weight, function(err, result) {
+    if (result && !err) {
+      log("voted on " + account + "/" + permlink);
+    } else {
+      log(err);
+      log(result);
+    }
+  });   
+}
+
+function startReblogging(tags0, blacklist, blacklist_tags) {
+  log("Listening to Steem Blockchain...")
+  let history = new Set();
+  steem.api.streamOperations((err, result) => {
+    if (result && !err) {
+      if (result[0] == 'comment') {
+        let author1 = result[1]['author'];
+        let permlink1 = result[1]['permlink'];
+        let json_metadata = result[1]['json_metadata'];
+        let parent_author = result[1]['parent_author'];
+        let parent_permlink = result[1]['parent_permlink'];
+        let post = "@" + author1 + "/" + permlink1;
+        if (!history.has(post)) {
+          history.add(post);        
+          let tags = [];
+          if (json_metadata) {
+            tags = JSON.parse(json_metadata.trim());
+            if (tags) {
+              tags = tags.tags;
+            }
+          }
+          if (parent_author===''&& (!permlink1.startsWith("re-")))  {
+            if (arrayInArray(tags, tags0)) {
+              if (blacklist.includes(author1)) {
+                log("blacklist author: " + author1);
+              } else if (arrayInArray(tags, blacklist_tags)) {
+                log("blacklist tags");
+              } else {
+                log("resteem " + post);
+                reblog(author1, permlink1);   
+              }       
+            }
+          }                          
+        }
+      }    
+    } else {
+      log('steem.api.streamOperations: ' + err);
+      history.clear();
+      failover();
+    }
+  });
+}
+
+function failover() {
+  if (config.rpc_nodes && config.rpc_nodes.length > 1) {
+    let cur_node_index = config.rpc_nodes.indexOf(steem.api.options.url) + 1;
+
+    if (cur_node_index == config.rpc_nodes.length)
+      cur_node_index = 0;
+
+    let rpc_node = config.rpc_nodes[cur_node_index];
+
+    steem.api.setOptions({ transport: 'https', uri: rpc_node, url: rpc_node });
+    log('');
+    log('***********************************************');
+    log('Failing over to: ' + rpc_node);
+    log('***********************************************');
+    log('');
+  }
+}
+                
+function log(msg) { 
+  console.log(new Date().toString() + ' - ' + msg); 
+}                          
+
+function startProcess() {
+  if (lock) {
+    log('another thread already running...');
+    return;
+  }
+  lock = true;
+  try {
+    startReblogging(config.tags, config.blacklist, config.blacklist_tags);
+  } catch (err) {
+    log(err.message);
+  } finally {
+    lock = false;
+  }  
+} {
+  const json = JSON.stringify(['reblog', {
+    account: config.account,
+    author: author1,
+    permlink: permlink1,
+  }]);              
+  steem.broadcast.customJson(config.posting_key, [], [config.account], 'follow', json, (err, result) => {
+      if (result && !err) {
+        log("resteemed!");
       } else {
         log(err);
       }
