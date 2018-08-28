@@ -62,7 +62,7 @@ const reblog = (author1, permlink1) => {
   });  
 }
 
-function startReblogging(tags0, blacklist) {
+function startReblogging(tags0, blacklist, blacklist_tags) {
   log("Listening to Steem Blockchain...")
   let history = new Set();
   steem.api.streamOperations((err, result) => {
@@ -87,6 +87,8 @@ function startReblogging(tags0, blacklist) {
             if (arrayInArray(tags, tags0)) {
               if (blacklist.includes(author1)) {
                 log("blacklist author: " + author1);
+              } else if (arrayInArray(tags, blacklist_tags)) {
+                log("blacklist tags");
               } else {
                 log("resteem " + post);
                 reblog(author1, permlink1);   
@@ -132,7 +134,7 @@ function startProcess() {
   }
   lock = true;
   try {
-    startReblogging(config.tags, config.blacklist);
+    startReblogging(config.tags, config.blacklist, config.blacklist_tags);
   } catch (err) {
     log(err.message);
   } finally {
