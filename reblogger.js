@@ -11,30 +11,7 @@ var config = JSON.parse(fs.readFileSync(CONFIG_FILE));
 var rpc_node = config.rpc_nodes ? config.rpc_nodes[0] : (config.rpc_node ? config.rpc_node : 'https://api.steemit.com');
 steem.api.setOptions({ transport: 'https', uri: rpc_node, url: rpc_node });
 
-// only allows 1 thread at a time
-var lock = false;
-
-function runInterval(func, wait, times){
-  let interv = function(w, t){
-    return function(){
-      if (typeof t === "undefined" || t-- > 0){
-        setTimeout(interv, w);
-        try {
-          func.call(null);
-        }
-        catch(e){
-          t = 0;
-          throw e.toString();
-        }
-      }
-    };
-  }(wait, times);
-  setTimeout(interv, wait);
-};
-
-// every config.interval seconds 
-runInterval(startProcess, config.interval * 1000, 99999999);
-
+// run immediately
 startProcess();
 
 // check if y array includes any x 
@@ -58,8 +35,7 @@ const reblog = (author1, permlink1) => {
         log("resteemed!");
         voting_post(author1, permlink1, config.voting_percentage);
       } else {
-        log(err);
-        log(result);
+        log("reblog(): " + err);
       }
   });  
 }
@@ -71,11 +47,37 @@ const voting_post = (account, permlink, weight) => {
   steem.broadcast.vote(config.posting_key, config.account, account, permlink, weight, function(err, result) {
     if (result && !err) {
       log("voted on " + account + "/" + permlink);
+      if (config.comment !== "") {
+        post_and_upvote_comment(account, permlink, config.comment);
+      }
     } else {
-      log(err);
-      log(result);
+      log("voting_post(): " + err);
     }
   });   
+}
+
+// post a comment
+const post_and_upvote_comment = (parent_author, parent_permlink, body) => {
+  /** Broadcast a comment */
+  let permlink = new Date().toISOString().replace(/[^a-zA-Z0-9]+/g, '').toLowerCase();
+  steem.broadcast.comment(
+    config.posting_key,
+    parent_author,
+    parent_permlink,
+    config.account, // Author
+    permlink, // Permlink
+    '', // Title
+    body, 
+    { tags: ['ilovecoding'], app: 'ilovecoding' }, // Json Metadata
+    function(err, result) {
+      if (result && !err) {
+        log("commented!");
+        voting_post(config.account, permlink, 500);
+      } else {
+        log(err);
+      } 
+    }
+  );
 }
 
 function startReblogging(tags0, blacklist, blacklist_tags) {
@@ -119,6 +121,7 @@ function startReblogging(tags0, blacklist, blacklist_tags) {
       failover();
     }
   });
+  history.clear();
 }
 
 function failover() {
@@ -139,21 +142,16 @@ function failover() {
   }
 }
                 
-function log(msg) { 
-  console.log(new Date().toString() + ' - ' + msg); 
+function log(msg) {
+  const ts = new Date().toString();  
+  console.log(ts + ' - ' + msg); 
 }                          
 
 function startProcess() {
-  if (lock) {
-    log('another thread already running...');
-    return;
-  }
-  lock = true;
   try {
     startReblogging(config.tags, config.blacklist, config.blacklist_tags);
   } catch (err) {
     log(err.message);
   } finally {
-    lock = false;
   }  
 }
