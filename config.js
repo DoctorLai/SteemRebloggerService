@@ -22,5 +22,6 @@
   "blacklist": [],    
   "voting_percentage": 500,
   "blacklist_tags": ["test"],    
-  "interval": 3
+  "interval": 3,
+  "comment": "", // empty to disable
 }
