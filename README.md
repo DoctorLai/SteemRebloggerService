@@ -15,10 +15,17 @@ Steem Reblogger by Tags - [@ilovecoding](https://steemit.com/@ilovecoding)
 
 ![](https://github.com/DoctorLai/SteemRebloggerService/blob/master/SteemRebloggerService.jpg?raw=true)
 
+## Features
+1. Customize Tags 
+2. Blacklist Accounts
+3. Blacklist Tags
+4. Customize Voting Percetange
+5. Customize Comment
+
 ## Roadmap
-1. Automatic Upvote for these resteemed posts
 2. Avoid Resteemed Twice (currently, exception thrown)
 3. Resteem Queue - allow control of resteem/maximum intervals
 
 ## SteemIt Post
-https://steemit.com/utopian-io/@justyy/i-love-coding-the-steemit-reblogger-service
+- [@ilovecoding - The SteemRebloggerService supports BlackList Tags and Automatic Voting(https://steemit.com/utopian-io/@justyy/ilovecoding-the-steemrebloggerservice-supports-blacklist-tags-and-automatic-voting)
+- [I Love Coding - the SteemIt Reblogger Service](https://steemit.com/utopian-io/@justyy/i-love-coding-the-steemit-reblogger-service)
