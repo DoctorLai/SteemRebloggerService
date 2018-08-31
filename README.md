@@ -26,6 +26,6 @@ Steem Reblogger by Tags - [@ilovecoding](https://steemit.com/@ilovecoding)
 2. Avoid Resteemed Twice (currently, exception thrown)
 3. Resteem Queue - allow control of resteem/maximum intervals
 
-## SteemIt Post
+## SteemIt Posts
 - [@ilovecoding - The SteemRebloggerService supports BlackList Tags and Automatic Voting](https://steemit.com/utopian-io/@justyy/ilovecoding-the-steemrebloggerservice-supports-blacklist-tags-and-automatic-voting)
 - [I Love Coding - the SteemIt Reblogger Service](https://steemit.com/utopian-io/@justyy/i-love-coding-the-steemit-reblogger-service)
