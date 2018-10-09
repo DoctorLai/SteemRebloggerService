@@ -48,7 +48,14 @@ const voting_post = (account, permlink, weight) => {
     if (result && !err) {
       log("voted on " + account + "/" + permlink);
       if (config.comment !== "") {
-        post_and_upvote_comment(account, permlink, config.comment);
+        // avoid comment on self
+        if (!config.comment_blacklist.includes(account)) {
+          if (!permlink.startsWith("re-")) { // doesn't work after HF20 
+            if (account !== config.account) { // double check
+              post_and_upvote_comment(account, permlink, config.comment);
+            }
+          }
+        }
       }
     } else {
       log("voting_post(): " + err);
@@ -92,6 +99,7 @@ function startReblogging(tags0, blacklist, blacklist_tags) {
         let parent_author = result[1]['parent_author'];
         let parent_permlink = result[1]['parent_permlink'];
         let post = "@" + author1 + "/" + permlink1;
+        let body = result[1]['body'];
         if (!history.has(post)) {
           history.add(post);        
           let tags = [];
@@ -101,7 +109,7 @@ function startReblogging(tags0, blacklist, blacklist_tags) {
               tags = tags.tags;
             }
           }
-          if (parent_author===''&& (!permlink1.startsWith("re-")))  {
+          if ((author1 !== config.account) && (parent_author === '') && (!body.includes(config.account)) && (!permlink1.startsWith("re-")))  {
             if (arrayInArray(tags, tags0)) {
               if (blacklist.includes(author1)) {
                 log("blacklist author: " + author1);
